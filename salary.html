@@ -10,42 +10,64 @@
     <style>
         body {
             height: fit-content;
-            min-width: 480px;
+            width: 30rem;
             background: #b9b6b6;
             display: block;
             position: relative;
-            font-family: Arial, Helvetica, sans-serif;
+            font-family:  Times, 'Times New Roman', Arial, Georgia, Helvetica, Verdana, Tahoma, sans-serif;
         }
         .block {
-            width: 80%;
-            min-width: fit-content;
-            margin: 1rem ;
+            min-width: 26rem;
+            max-width: fit-content;
             display: block;
             position: absolute;
-            left: 5%;
             padding: 5px;
             border-radius: 5px;
             background: rgb(101, 101, 180);
         }
         .input {
 
-            display: flex;
-            flex-direction: column;
+            display: grid;
+            gap: 2px;
+            grid-template-columns: 1fr 1fr 1fr;
             background: #559;
-            padding: 5px;
-            border-radius: 5px;
+            padding: 3px;
+            border-radius: 2px;
             position: relative;
+            font-weight: bold;
+            font-size: 13pt;
         }
 
-        .input p {
+        .input .igrid {
             padding: 3px;
-            margin: 2px;
+            margin: none;
             background: #999;
-            border-radius: 4px;
-            font-size: 12pt;
-            height: 90%;
-            display: inline-block;
+            border-radius: 1px;
+            height: auto;
         }
+        .igrid:nth-child(1) {
+            grid-column: 1/3;
+            grid-row: 2;
+        }
+        .igrid:nth-child(2) {
+            grid-column: 3;
+            grid-row: 2;
+        }
+        .igrid:nth-child(3) {
+            grid-column: 1/-1;
+            grid-row: 1;
+        }
+        .igrid:nth-child(4) {
+            grid-column: 1/-1;
+            grid-row: 3;
+        }
+        .igrid:nth-child(5) {
+            grid-column: 1/-1;
+            grid-row: 4;
+        }
+
+
+
         label {
             display: flex;
             justify-content: space-between;
@@ -54,6 +76,7 @@
             padding: 2px;
             border-radius: 7px;
             width: 5rem;
+            font-size: 12pt;
         }
         .input span {
             font-weight: 600;
@@ -64,15 +87,14 @@
             display: inline-block;
         }
         #result {
-            margin: 2px;
             display: grid;
+            gap: 3px;
             grid-template-columns: 1fr 1fr;
             background: #a4a8af;
             border-radius: inherit;
         }
         #res1, #res2, #res3 {
-            height: 90%;
-            margin: inherit;
+            height: 98%;
             padding: 2px;
             background: #8d9db6;
             border-radius: inherit;
@@ -84,21 +106,19 @@
             background: rgb(193, 197, 160);
         }
         #bar {
-            background: rgb(115, 178, 194);
             position: relative;
             overflow: hidden;
             height: 15px;
-            width: 100%;
-            border-radius: inherit;
+            border-radius: 2px;
 
         }
         #barL, #barR {
             position: absolute;
             border: 1px solid rgb(141, 93, 48);
-            border-radius: 2px;
+            border-radius: 5px;
             height: 15px;
             bottom: 0;
-            top: 0;
+            top: 2px;
             right: 0;
             left: 0;
             background: rgb(39, 219, 39);
@@ -106,25 +126,30 @@
     </style>
     <div class="block">
     <div class="input">
-        <p>
-        <span>Твое время на работе:</span>
-        <label>Количество смен:
-            <input type="number" name="def" value="15">
-        </label>
-        <label>Смена (часов):
-            <input type="number" name="def" value="15">
-        </label>
-        <label>Доп. часы (+/-):
-            <input type="number" name="def" value="0">
-        </label>
-        <label>Оплата в час (руб.):
-            <input type="number" name="def" value="147">
-        </label></p>
-        <p><label style="display: block;">НДФЛ 13%:<br/>
-            З/П:<input type="checkbox"  checked>
-            Премия:<input type="checkbox"  checked>
-        </label></p>
-        <p>
+        <div class="igrid">
+            <span>Твое время на работе:</span>
+            <label>Количество смен:
+                <input type="number" name="def" value="15">
+            </label>
+            <label>Смена (часов):
+                <input type="number" name="def" value="15">
+            </label>
+            <label>Доп. часы (+/-):
+                <input type="number" name="def" value="0">
+            </label>
+            <label>Оплата в час (руб.):
+                <input type="number" name="def" value="147">
+            </label>
+        </div>
+        <div class="igrid"><span>НДФЛ 13%:</span><hr width="95%"/>
+            <label> З/П:
+                <input type="checkbox"  checked>
+            </label>
+            <label>Премия:
+                <input type="checkbox"  checked>
+            </label>
+        </div>
+        <div class="igrid">
         <span>В бумажке написано:</span>    
         <label>Премия и праздничные (руб.):
             <input type="number" name="def" value="1210.12">
@@ -132,8 +157,8 @@
             За расчетный период:<br>
             <label><b>(I)*</b>Начислено (руб): <input type="number" name="def" value="9261"></label>
             <label> <b>(II)</b>Начислено (руб): <input type="number" name="def" value="10290"></label>
-        </p>
-        <div id="bar">
+        </div>
+        <div class="igrid" id="bar">
             <div id="barL"></div><div id="barR" style="left: 0;"></div> 
         </div>
 
@@ -145,7 +170,8 @@
             $compare = document.querySelector('#barR'),
             $result = document.createElement('div');
 
-        $result.id='result';
+        $result.id='result'; 
+        $result.classList ='igrid';
         result();
         $input.append($result);
         $input.addEventListener('input', result);
@@ -163,32 +189,49 @@
                 netIncome = ((+gross) + (+dotation) - (+fees)).toFixed(2),
                 hoursRes = (grossReal/input[3].value).toFixed(2),
                 realCache = ((+grossReal) + (+dotation) - (+feesReal)).toFixed(2),
-                compare = (((+realCache)/(+netIncome))*100).toFixed(0);
+                compare = (((+realCache)/(+netIncome))*100).toFixed(0),
+                loosCash = ((+netIncome) - (+realCache)).toFixed(2),
+                loosTime = ((+hours)-(+hoursRes)).toFixed(2), 
+                message = () => {
+                    return (compare<=60)?`${loosTime} - это часы подарившие тебе опыт<br>
+                        а твои ${loosCash}р. принесут пользу хорошим людям.<br>Ты очень важен, работай несмотря ни на что, деньги всего лишь бумажки. Держись! 
+                    Здоровья тебе и хорошего настроения!`
+                        :(compare<=70)?`${loosTime} - это часы подарившие тебе опыт<br>
+                        а твои ${loosCash}р. принесут пользу хорошим людям.<br>
+                        Счастье иметь такого работника! :) `
+                        :(compare<=80)?`${loosTime} - это часы подарившие тебе опыт<br>
+                        а твои ${loosCash}р. принесут пользу хорошим людям.<br>Ты отлично поработал, продолжай и босс позволит себе еще одну машину!`
+                        :(compare<=90)?`${loosTime} - это часы подарившие тебе опыт<br>
+                        а твои ${loosCash}р. принесут пользу хорошим людям.<br>Надо было учиться...`
+                        :(compare<100)?`${loosTime} - это часы подарившие тебе опыт<br>
+                        а твои ${loosCash}р. принесут пользу хорошим людям.<br>Где-то прое@ался...но в целом неплохо!`
+                        :(compare>=100)?`ТЫ ПОИМЕЛ систему и заработал ${-(+loosCash)}`
+                        :'чЁта пашло нитак...'
+                    
+                };
 
             console.log(hours,gross,fees,dotation,netIncome,"\n",grossReal,dotation,feesReal,realCache);   
             //$compare.style=`left:${percValid};`; 
             $compare.style = `left:${compare}%;background:rgb(255,${compare},${compare});`;
             $result.innerHTML=`
                 <div id="res1">
-                <b>Ожидание</b><br>    
-                Время часов: ${hours}<br>
-                Ожидаешь: ${gross} р<br>
-                Премия: ${dotation} р<br>
-                Налог: ${fees} р<br>
-                <span>Доход: ${netIncome} руб</span>
+                <b>Ожидание</b><hr>    
+                Время: ${hours} ч.<br>
+                Сумма: ${gross} р.<br>
+                Премия: ${dotation} р.<br>
+                Налог: ${fees} р.<br>
+                <span>Итог: ${netIncome} руб</span>
                 </div>
                 <div id="res2" style="background:#${(compare<=60)?753:(compare<=70)?864:(compare<=80)?975:(compare<=90)?899:(compare<=100)?'8c8':(compare>100)?'8d8':'ccc'};">
-                <b>Реальность</b><br>
-                Засчитано: ${hoursRes} часов<br>
-                Начислено: ${grossReal} руб<br>
-                Премия: ${dotation} руб<br>
-                Налог: ${feesReal} руб<br>
+                <b>Реальность</b><hr>
+                Засчитано: ${hoursRes} ч.<br>
+                Начислено: ${grossReal} р.<br>
+                Премия: ${dotation} р.<br>
+                Налог: ${feesReal} р.<br>
                 <span>Доход: ${realCache} руб</span>
                 </div>
                 <div id="res3">
-                    
-                    ${(compare<=60)?'Ты очень важен<br>работай несмотря ни на что<br>деньги всего лишь бумажки.<br>Держись!<br>Здоровья тебе и хорошего настроения!<br>':(compare<=70)?'Счастье иметь такого работника!<br>:)<br>':(compare<=80)?'Ты отлично поработал, продолжай <br>и босс позволит себе еще одну машину!<br>':(compare<=90)?'Надо было учиться...<br>':(compare<=100)?'Где-то проебался...<br>но в целом неплохо!<br>':(compare>100)?'ТЫ ПОИМЕЛ систему<br>':'чЁта пашло нитак...<br>'}
-                    -${compare}%<br> 
+                    ${(message())} 
                 </div>
                 `;
         
