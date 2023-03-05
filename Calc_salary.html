@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <style>
+        body {
+            height: fit-content;
+            min-width: 480px;
+            background: #b9b6b6;
+            display: block;
+            position: relative;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        .block {
+            width: 80%;
+            min-width: fit-content;
+            margin: 1rem ;
+            display: block;
+            position: absolute;
+            left: 5%;
+            padding: 5px;
+            border-radius: 5px;
+            background: rgb(101, 101, 180);
+        }
+        .input {
+
+            display: flex;
+            flex-direction: column;
+            background: #559;
+            padding: 5px;
+            border-radius: 5px;
+            position: relative;
+        }
+
+        .input p {
+            padding: 3px;
+            margin: 2px;
+            background: #999;
+            border-radius: 4px;
+            font-size: 12pt;
+            height: 90%;
+            display: inline-block;
+        }
+        label {
+            display: flex;
+            justify-content: space-between;
+        }
+        .input input {
+            padding: 2px;
+            border-radius: 7px;
+            width: 5rem;
+        }
+        .input span {
+            font-weight: 600;
+            font-size: 13pt;
+            background: #7388a7;
+            margin: 1px;
+            padding: 3px;
+            display: inline-block;
+        }
+        #result {
+            margin: 2px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: #a4a8af;
+            border-radius: inherit;
+        }
+        #res1, #res2, #res3 {
+            height: 90%;
+            margin: inherit;
+            padding: 2px;
+            background: #8d9db6;
+            border-radius: inherit;
+        }
+        #res3 {
+            grid-column: 1/-1;
+            grid-row: 1;
+            text-align: center;
+            background: rgb(193, 197, 160);
+        }
+        #bar {
+            background: rgb(115, 178, 194);
+            position: relative;
+            overflow: hidden;
+            height: 15px;
+            width: 100%;
+            border-radius: inherit;
+
+        }
+        #barL, #barR {
+            position: absolute;
+            border: 1px solid rgb(141, 93, 48);
+            border-radius: 2px;
+            height: 15px;
+            bottom: 0;
+            top: 0;
+            right: 0;
+            left: 0;
+            background: rgb(39, 219, 39);
+        }
+    </style>
+    <div class="block">
+    <div class="input">
+        <p>
+        <span>Твое время на работе:</span>
+        <label>Количество смен:
+            <input type="number" name="def" value="15">
+        </label>
+        <label>Смена (часов):
+            <input type="number" name="def" value="15">
+        </label>
+        <label>Доп. часы (+/-):
+            <input type="number" name="def" value="0">
+        </label>
+        <label>Оплата в час (руб.):
+            <input type="number" name="def" value="147">
+        </label></p>
+        <p><label style="display: block;">НДФЛ 13%:<br/>
+            З/П:<input type="checkbox"  checked>
+            Премия:<input type="checkbox"  checked>
+        </label></p>
+        <p>
+        <span>В бумажке написано:</span>    
+        <label>Премия и праздничные (руб.):
+            <input type="number" name="def" value="1210.12">
+        </label>
+            За расчетный период:<br>
+            <label><b>(I)*</b>Начислено (руб): <input type="number" name="def" value="9261"></label>
+            <label> <b>(II)</b>Начислено (руб): <input type="number" name="def" value="10290"></label>
+        </p>
+        <div id="bar">
+            <div id="barL"></div><div id="barR" style="left: 0;"></div> 
+        </div>
+
+    </div>
+    </div>
+
+    <script>
+        const $input = document.querySelector('.input'),
+            $compare = document.querySelector('#barR'),
+            $result = document.createElement('div');
+
+        $result.id='result';
+        result();
+        $input.append($result);
+        $input.addEventListener('input', result);
+        
+        function result(e) {
+            const input = document.querySelectorAll('input');
+            //const replace = (i) => {i.value=i.value.replace(/[^\d]/g,'').slice(0,8)}
+            //input.forEach(replace);
+            const hours = (+(input[0].value*input[1].value)+(+input[2].value)).toFixed(2),
+                gross = (hours*input[3].value).toFixed(2),
+                grossReal = ((+input[7].value)+(+input[8].value)).toFixed(2),
+                dotation = (+input[6].value).toFixed(2),
+                fees = ((input[4].checked?(gross*13)/100:0) + (input[5].checked?(+dotation*13)/100:0)).toFixed(2),
+                feesReal = ((input[4].checked?(grossReal*13)/100:0) + (input[5].checked?(+dotation*13)/100:0)).toFixed(2),
+                netIncome = ((+gross) + (+dotation) - (+fees)).toFixed(2),
+                hoursRes = (grossReal/input[3].value).toFixed(2),
+                realCache = ((+grossReal) + (+dotation) - (+feesReal)).toFixed(2),
+                compare = (((+realCache)/(+netIncome))*100).toFixed(0);
+
+            console.log(hours,gross,fees,dotation,netIncome,"\n",grossReal,dotation,feesReal,realCache);   
+            //$compare.style=`left:${percValid};`; 
+            $compare.style = `left:${compare}%;background:rgb(255,${compare},${compare});`;
+            $result.innerHTML=`
+                <div id="res1">
+                <b>Ожидание</b><br>    
+                Время часов: ${hours}<br>
+                Ожидаешь: ${gross} р<br>
+                Премия: ${dotation} р<br>
+                Налог: ${fees} р<br>
+                <span>Доход: ${netIncome} руб</span>
+                </div>
+                <div id="res2" style="background:#${(compare<=60)?753:(compare<=70)?864:(compare<=80)?975:(compare<=90)?899:(compare<=100)?'8c8':(compare>100)?'8d8':'ccc'};">
+                <b>Реальность</b><br>
+                Засчитано: ${hoursRes} часов<br>
+                Начислено: ${grossReal} руб<br>
+                Премия: ${dotation} руб<br>
+                Налог: ${feesReal} руб<br>
+                <span>Доход: ${realCache} руб</span>
+                </div>
+                <div id="res3">
+                    3
+                    ${(compare<=60)?'Ты очень важен<br>работай несмотря ни на что<br>деньги всего лишь бумажки.<br>Держись!<br>Здоровья тебе и хорошего настроения!<br>':(compare<=70)?'Счастье иметь такого работника!<br>:)<br>':(compare<=80)?'Ты отлично поработал, продолжай <br>и босс позволит себе еще одну машину!<br>':(compare<=90)?'Надо было учиться...<br>':(compare<=100)?'Где-то проебался...<br>но в целом неплохо!<br>':(compare>100)?'ТЫ ПОИМЕЛ систему<br>':'чЁта пашло нитак...<br>'}
+                </div>
+                `;
+        
+        }
+        
+    </script>
+</body>
+</html>
